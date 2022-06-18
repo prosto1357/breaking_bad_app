@@ -1,0 +1,50 @@
+.container_div {
+  display: flex;
+  margin: 3px;
+  padding: 5px;
+  border: 1px solid fuchsia;
+  width: 300px;
+}
+
+.title_div {
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.container_div:hover {
+  background-color: bisque;
+}
+
+.count_div {
+  display: flex;
+}
+
+.character_div {
+  display: flex;
+}
+
+.delete_div {
+  margin-left: 15px;
+  padding: 4px;
+  border-radius: 4px;
+  background-color: crimson;
+  height: 75%;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.sign_div {
+  background-color: cornflowerblue;
+  padding: 4px;
+  margin: 0 3px;
+  border-radius: 4px;
+}
+
+.number_div {
+  width: 20px;
+  text-align: center;
+}
+
+.character_noun_div {
+  width: 100px;
+}

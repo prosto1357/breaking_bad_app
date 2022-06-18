@@ -1,0 +1,17 @@
+.request_div {
+  border: none;
+  background-color: cadetblue;
+  font-size: 20px;
+  padding: 6px;
+  margin-left: 5px;
+  border-radius: 4px;
+}
+
+.sorting_div {
+  border: none;
+  background-color: coral;
+  font-size: 16px;
+  padding: 6px;
+  margin: 0 5px 5px 5px;
+  border-radius: 4px;
+}
