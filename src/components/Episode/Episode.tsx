@@ -1,7 +1,7 @@
 import React, {FC} from "react";
 import {useDispatch} from "react-redux";
 
-import {changeNumberOfCharacters, deleteEpisode} from "../../redux/episodes-reducer";
+import {actions} from "../../redux/episodes-reducer";
 import {AppDispatch, EpisodeType} from "../../types/types";
 import {declension} from "../../utils/declension";
 
@@ -19,7 +19,7 @@ const Episode: FC<EpisodeType> = ({episodeId, episodeCharactersNumber}) => {
             <div
               className={styles.sign_div}
               onClick={() => {
-                dispatch(changeNumberOfCharacters(episodeId, "remove"))
+                dispatch(actions.changeNumberOfCharacters(episodeId, "remove"))
               }}
             >
               -
@@ -28,7 +28,7 @@ const Episode: FC<EpisodeType> = ({episodeId, episodeCharactersNumber}) => {
             <div
               className={styles.sign_div}
               onClick={() => {
-                dispatch(changeNumberOfCharacters(episodeId, "add"))
+                dispatch(actions.changeNumberOfCharacters(episodeId, "add"))
               }}
             >
               +
@@ -40,7 +40,7 @@ const Episode: FC<EpisodeType> = ({episodeId, episodeCharactersNumber}) => {
       <div
         className={styles.delete_div}
         onClick={() => {
-          dispatch(deleteEpisode(episodeId))
+          dispatch(actions.deleteEpisode(episodeId))
         }}>
         Удалить
       </div>
