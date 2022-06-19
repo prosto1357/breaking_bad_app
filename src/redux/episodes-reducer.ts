@@ -1,37 +1,35 @@
 import {Dispatch} from "redux";
 import {ThunkAction} from "redux-thunk";
 
-import {AppStateType} from "./store";
+import {AppStateType, InferActionsTypes} from "./store";
 import {episodesAPI} from "../api/api";
 import {EpisodeType} from "../types/types";
-
-const GET_EPISODES = 'episodes/GET_EPISODES'
-const DELETE_EPISODE = 'episodes/DELETE_EPISODE'
-const CHANGE_NUMBER_OF_CHARACTERS = 'episodes/CHANGE_NUMBER_OF_CHARACTERS'
-const SORT_BY_NUMBER_OF_CHARACTERS = 'episodes/SORT_BY_NUMBER_OF_CHARACTERS'
-const TOGGLE_IS_FETCHING = 'episodes/TOGGLE_IS_FETCHING'
 
 const initialState = {
   episodes: [] as Array<EpisodeType>,
   isFetching: false
 }
 
-const episodesReducer = (state = initialState, action: ActionsType) => {
+type InitialStateType = typeof initialState
+
+type EpisodeObjectData = { characters: Array<string>, episode_id: number }
+
+const episodesReducer = (state = initialState, action: ActionsType): InitialStateType => {
   switch (action.type) {
-    case GET_EPISODES:
+    case 'episodes/SET_EPISODES':
       return {
         ...state,
-        episodes: action.episodes.map((episode, index) => ({
-          episodeId: index + 1,
+        episodes: action.episodes.map((episode) => ({
+          episodeId: episode.episode_id,
           episodeCharactersNumber: episode.characters.length
         }))
       }
-    case DELETE_EPISODE:
+    case 'episodes/DELETE_EPISODE':
       return {
         ...state,
         episodes: state.episodes.filter((episode) => episode.episodeId !== action.episodeId)
       }
-    case CHANGE_NUMBER_OF_CHARACTERS:
+    case 'episodes/CHANGE_NUMBER_OF_CHARACTERS':
       return {
         ...state,
         episodes: state.episodes.map(episode => {
@@ -49,7 +47,7 @@ const episodesReducer = (state = initialState, action: ActionsType) => {
           return episode
         })
       }
-    case SORT_BY_NUMBER_OF_CHARACTERS:
+    case 'episodes/SORT_BY_NUMBER_OF_CHARACTERS':
       return {
         ...state,
         episodes: state.episodes.slice().sort((a, b) => {
@@ -62,63 +60,41 @@ const episodesReducer = (state = initialState, action: ActionsType) => {
           return 0;
         })
       }
-    case TOGGLE_IS_FETCHING:
+    case 'episodes/TOGGLE_IS_FETCHING':
       return {...state, isFetching: action.isFetching}
     default:
       return state
   }
 }
 
-type ActionsType = SetEpisodesActionType | DeleteEpisodeActionType | ChangeNumberOfCharactersActionType
-  | ToggleIsFetchingActionType | SortByNumberOfCharactersActionType
+type ActionsType = InferActionsTypes<typeof actions>
 
-type SetEpisodesActionType = {
-  type: typeof GET_EPISODES
-  episodes: Array<{ characters: Array<string> }>
+export const actions = {
+  setEpisodes: (episodes: Array<EpisodeObjectData>) => ({type: 'episodes/SET_EPISODES', episodes} as const),
+  deleteEpisode: (episodeId: number) => ({type: 'episodes/DELETE_EPISODE', episodeId} as const),
+  changeNumberOfCharacters: (episodeId: number, mathAction: "add" | "remove") => ({
+    type: 'episodes/CHANGE_NUMBER_OF_CHARACTERS',
+    episodeId,
+    mathAction
+  } as const),
+  sortByNumberOfCharacters: (sortDirection: "asc" | "desc") => ({
+    type: 'episodes/SORT_BY_NUMBER_OF_CHARACTERS',
+    sortDirection
+  } as const),
+  toggleIsFetching: (isFetching: boolean) => ({type: 'episodes/TOGGLE_IS_FETCHING', isFetching} as const)
 }
 
-export const setEpisodes = (episodes: Array<{ characters: Array<string> }>): SetEpisodesActionType =>
-  ({type: GET_EPISODES, episodes})
-
-type DeleteEpisodeActionType = {
-  type: typeof DELETE_EPISODE
-  episodeId: number
-}
-export const deleteEpisode = (episodeId: number): DeleteEpisodeActionType =>
-  ({type: DELETE_EPISODE, episodeId})
-
-type ChangeNumberOfCharactersActionType = {
-  type: typeof CHANGE_NUMBER_OF_CHARACTERS
-  episodeId: number
-  mathAction: "add" | "remove"
-}
-export const changeNumberOfCharacters = (episodeId: number, mathAction: "add" | "remove"): ChangeNumberOfCharactersActionType =>
-  ({type: CHANGE_NUMBER_OF_CHARACTERS, episodeId, mathAction})
-
-type SortByNumberOfCharactersActionType = {
-  type: typeof SORT_BY_NUMBER_OF_CHARACTERS
-  sortDirection: "asc" | "desc"
-}
-export const sortByNumberOfCharacters = (sortDirection: "asc" | "desc"): SortByNumberOfCharactersActionType =>
-  ({type: SORT_BY_NUMBER_OF_CHARACTERS, sortDirection})
-
-type ToggleIsFetchingActionType = {
-  type: typeof TOGGLE_IS_FETCHING
-  isFetching: boolean
-}
-export const toggleIsFetching = (isFetching: boolean): ToggleIsFetchingActionType =>
-  ({type: TOGGLE_IS_FETCHING, isFetching})
 
 export type DispatchType = Dispatch<ActionsType>
 export type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 
 export const requestEpisodes = (): ThunkType => {
   return async (dispatch: DispatchType) => {
-    dispatch(toggleIsFetching(true))
+    dispatch(actions.toggleIsFetching(true))
     const data = await episodesAPI.getEpisodes()
-    dispatch(toggleIsFetching(false))
+    dispatch(actions.toggleIsFetching(false))
 
-    dispatch(setEpisodes(data))
+    dispatch(actions.setEpisodes(data))
   }
 }
 

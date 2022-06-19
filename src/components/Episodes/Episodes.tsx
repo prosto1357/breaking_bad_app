@@ -1,7 +1,7 @@
 import React, {FC} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
-import {requestEpisodes, sortByNumberOfCharacters} from "../../redux/episodes-reducer";
+import {actions, requestEpisodes} from "../../redux/episodes-reducer";
 import {AppStateType} from "../../redux/store";
 import Episode from "../Episode/Episode";
 import {AppDispatch} from "../../types/types";
@@ -33,7 +33,7 @@ const Episodes: FC = () => {
         <button
           className={styles.sorting_div}
           onClick={() => {
-            dispatch(sortByNumberOfCharacters("desc"))
+            dispatch(actions.sortByNumberOfCharacters("desc"))
           }}
         >
           Сортировать по убыванию количества персонажей
@@ -41,7 +41,7 @@ const Episodes: FC = () => {
         <button
           className={styles.sorting_div}
           onClick={() => {
-            dispatch(sortByNumberOfCharacters("asc"))
+            dispatch(actions.sortByNumberOfCharacters("asc"))
           }}
         >
           Сортировать по возрастанию количества персонажей
